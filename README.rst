@@ -1,49 +1,15 @@
-.. You should enable this project on travis-ci.org and coveralls.io to make
-   these badges work. The necessary Travis and Coverage config files have been
-   generated for you.
-
-.. image:: https://travis-ci.org/alantygel/ckanext-semantictags.svg?branch=master
-    :target: https://travis-ci.org/alantygel/ckanext-semantictags
-
-.. image:: https://coveralls.io/repos/alantygel/ckanext-semantictags/badge.png?branch=master
-  :target: https://coveralls.io/r/alantygel/ckanext-semantictags?branch=master
-
-.. image:: https://pypip.in/download/ckanext-semantictags/badge.svg
-    :target: https://pypi.python.org/pypi//ckanext-semantictags/
-    :alt: Downloads
-
-.. image:: https://pypip.in/version/ckanext-semantictags/badge.svg
-    :target: https://pypi.python.org/pypi/ckanext-semantictags/
-    :alt: Latest Version
-
-.. image:: https://pypip.in/py_versions/ckanext-semantictags/badge.svg
-    :target: https://pypi.python.org/pypi/ckanext-semantictags/
-    :alt: Supported Python versions
-
-.. image:: https://pypip.in/status/ckanext-semantictags/badge.svg
-    :target: https://pypi.python.org/pypi/ckanext-semantictags/
-    :alt: Development Status
-
-.. image:: https://pypip.in/license/ckanext-semantictags/badge.svg
-    :target: https://pypi.python.org/pypi/ckanext-semantictags/
-    :alt: License
 
 =============
 ckanext-semantictags
 =============
 
-.. Put a description of your extension here:
-   What does it do? What features does it have?
-   Consider including some screenshots or embedding a video!
-
+CKAN Semantic Tags gives the possibility for Open Data Portals to semantically tag their datasets. It also allows CKAN portals to connect to a Tag Server, in order to exchange data with other portals.
 
 ------------
 Requirements
 ------------
 
-For example, you might want to mention here which versions of CKAN this
-extension works with.
-
+CKAN >= 2.5
 
 ------------
 Installation
