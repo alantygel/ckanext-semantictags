@@ -79,5 +79,8 @@ setup(
     entry_points='''
         [ckan.plugins]
         semantictags=ckanext.semantictags.plugin:SemantictagsPlugin
+
+	[paste.paster_command]
+        semantictags=ckanext.semantictags.commands:SemanticTagsCommands
     ''',
 )

@@ -5,7 +5,7 @@
   {{ form.input('tag_string', id='field-tags', label=_('Tags'), placeholder=_('eg. economy, mental health, government'), value=data.tag_string, error=errors.tags, classes=['control-full'], attrs=tag_attrs) }}
 
 	{% block semantic_tags %}
-	{{ form.input('sem_tag_string', id='field-semantic-tags', label=_('Semantic Tags'), placeholder=_('http://dbpedia.org/resource/Budget, ...'), value=data.tag_string, error=errors.tags, classes=['control-full']) }}
+	{{ form.input('sem_tag_string', id='field-semantic-tags', label=_('Semantic Tags'), placeholder=_('http://dbpedia.org/resource/Budget, ...'),  error=errors.tags, classes=['control-full']) }}
 {% endblock %}
 
 {% endblock %}

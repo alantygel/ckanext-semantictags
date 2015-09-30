@@ -11,3 +11,8 @@ class SemantictagsPlugin(plugins.SingletonPlugin):
         toolkit.add_template_directory(config_, 'templates')
         toolkit.add_public_directory(config_, 'public')
         toolkit.add_resource('fanstatic', 'semantictags')
+
+    # Declare that this plugin will implement ITemplateHelpers.
+    #plugins.implements(plugins.ITemplateHelpers)
+
+
