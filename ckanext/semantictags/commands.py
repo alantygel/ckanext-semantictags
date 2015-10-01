@@ -43,9 +43,9 @@ class SemanticTagsCommands(CkanCommand):
             log.warning('Semantic Tags table already exists')
             print 'Semantic Tags table already exists'
 
-        if not db.package_semantictag_table.exists():
-            db.package_semantictag_table.create()
-            log.info('Package Semantic Tags table created')
+        if not db.tag_semantictag_table.exists():
+            db.tag_semantictag_table.create()
+            log.info('Tag Semantic Tags table created')
         else:
-            log.warning('Package Semantic Tags table already exists')
-            print 'Package Semantic Tags table already exists'
+            log.warning('Tag Semantic Tags table already exists')
+            print 'Tag Semantic Tags table already exists'
