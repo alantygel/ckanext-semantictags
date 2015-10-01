@@ -3,8 +3,7 @@ from sqlalchemy.orm import relation
 from sqlalchemy import types, Column, Table, ForeignKey, and_, UniqueConstraint
 
 
-
-import ckan.model.package as _package
+import ckan.model.tag as _tag
 import ckan.model.extension as _extension
 import ckan.model.core as core
 import ckan.model.meta as meta
@@ -14,8 +13,8 @@ import ckan.model.activity as activity
 import ckan  # this import is needed
 import ckan.lib.dictization
 
-__all__ = ['semantictag_table', 'package_semantictag_table', 'SemanticTag', 'PackageSemanticTag',
-           'package_semantictag_revision_table',
+__all__ = ['semantictag_table', 'tag_semantictag_table', 'SemanticTag', 'TagSemanticTag',
+           'tag_semantictag_revision_table',
            'MAX_TAG_LENGTH', 'MIN_TAG_LENGTH']
 
 MAX_TAG_LENGTH = 200
@@ -27,15 +26,15 @@ semantictag_table = Table('semantictag', meta.metadata,
         Column('label', types.Unicode(MAX_TAG_LENGTH))
 )
 
-package_semantictag_table = Table('package_semantictag', meta.metadata,
+tag_semantictag_table = Table('tag_semantictag', meta.metadata,
         Column('id', types.UnicodeText, primary_key=True, default=_types.make_uuid),
-        Column('package_id', types.UnicodeText, ForeignKey('package.id')),
+        Column('tag_id', types.UnicodeText, ForeignKey('tag.id')),
         Column('semantictag_id', types.UnicodeText, ForeignKey('semantictag.id')),
         )
 
-vdm.sqlalchemy.make_table_stateful(package_semantictag_table)
+vdm.sqlalchemy.make_table_stateful(tag_semantictag_table)
 # TODO: this has a composite primary key ...
-package_semantictag_revision_table = core.make_revisioned_table(package_semantictag_table)
+tag_semantictag_revision_table = core.make_revisioned_table(tag_semantictag_table)
 
 class SemanticTag(domain_object.DomainObject):
     def __init__(self, URI, label=''):
@@ -122,7 +121,7 @@ class SemanticTag(domain_object.DomainObject):
         query = meta.Session.query(SemanticTag)
         search_term = search_term.strip().lower()
         query = query.filter(SemanticTag.URI.contains(search_term))
-        query = query.distinct().join(SemanticTag.package_semantictags)
+        query = query.distinct().join(SemanticTag.tag_semantictags)
         return query
 
     @classmethod
@@ -142,50 +141,50 @@ class SemanticTag(domain_object.DomainObject):
 #           query = meta.Session.query(Tag).filter(Tag.vocabulary_id==vocab.id)
 #        else:
         query = meta.Session.query(SemanticTag)
-        query = query.distinct().join(PackageTag)
+        query = query.distinct().join(TagSemanticTag)
         query = query.filter_by(state='active')
         return query
 
     @property
-    def packages(self):
-        '''Return a list of all packages that have this semantic tag, sorted by name.
+    def tags(self):
+        '''Return a list of all tags that have this semantic tag, sorted by name.
 
-        :rtype: list of ckan.model.package.Package objects
+        :rtype: list of ckan.model.tag.Tag objects
 
         '''
-        q = meta.Session.query(_package.Package)
-        q = q.join(PackageSemanticTag)
+        q = meta.Session.query(_tag.Tag)
+        q = q.join(TagSemanticTag)
         q = q.filter_by(tag_id=self.id)
         q = q.filter_by(state='active')
-        q = q.order_by(_package.Package.name)
-        packages = q.all()
-        return packages
+        q = q.order_by(_tag.Tag.name)
+        tags = q.all()
+        return tags
 
     def __repr__(self):
-        return '<Tag %s>' % self.URI
+        return '<SemanticTag %s>' % self.URI
 
-class PackageSemanticTag(vdm.sqlalchemy.RevisionedObjectMixin,
+class TagSemanticTag(vdm.sqlalchemy.RevisionedObjectMixin,
         vdm.sqlalchemy.StatefulObjectMixin,
         domain_object.DomainObject):
-    def __init__(self, package=None, semantictag=None, state=None, **kwargs):
-        self.package = package
+    def __init__(self, tag=None, semantictag=None, state=None, **kwargs):
+        self.tag = tag
         self.semantictag = semantictag
         self.state = state
         for k,v in kwargs.items():
             setattr(self, k, v)
 
     def __repr__(self):
-        s = u'<PackageSemanticTag package=%s semantictag=%s>' % (self.package.name, self.semantictag.URI)
+        s = u'<TagSemanticTag tag=%s semantictag=%s>' % (self.tag.name, self.semantictag.URI)
         return s.encode('utf8')
 
     def activity_stream_detail(self, activity_id, activity_type):
         if activity_type == 'new':
-            # New PackageTag objects are recorded as 'added tag' activities.
+            # New TagSemanticTag objects are recorded as 'added tag' activities.
             activity_type = 'added'
         elif activity_type == 'changed':
-            # Changed PackageTag objects are recorded as 'removed tag'
+            # Changed TagSemanticTag objects are recorded as 'removed tag'
             # activities.
-            # FIXME: This assumes that whenever a PackageTag is changed it's
+            # FIXME: This assumes that whenever a TagSemanticTag is changed it's
             # because its' state has been changed from 'active' to 'deleted'.
             # Should do something more here to test whether that is in fact
             # what has changed.
@@ -197,7 +196,7 @@ class PackageSemanticTag(vdm.sqlalchemy.RevisionedObjectMixin,
         import ckan.model as model
         c = {'model': model}
         d = {'semantictag': ckan.lib.dictization.table_dictize(self.semantictag, c),
-            'package': ckan.lib.dictization.table_dictize(self.package, c)}
+            'tag': ckan.lib.dictization.table_dictize(self.tag, c)}
         return activity.ActivityDetail(
             activity_id=activity_id,
             object_id=self.id,
@@ -206,45 +205,45 @@ class PackageSemanticTag(vdm.sqlalchemy.RevisionedObjectMixin,
             data=d)
 
     @classmethod
-    def by_name(self, package_name, semantictag_URI,
+    def by_name(self, tag_name, semantictag_URI,
             autoflush=True):
-        '''Return the PackageSemanticTag for the given package name and tag URI, or None.
+        '''Return the TagSemanticTag for the given tag name and semantic tag URI, or None.
 
-        :param package_name: the name of the package to look for
-        :type package_name: string
+        :param tag_name: the name of the tag to look for
+        :type tag_name: string
         :param tag_URI: the name of the tag to look for
         :type tag_URI: string
 
-        :returns: the PackageTag for the given package and tag names, or None
-            if there is no PackageTag for those package and tag names
-        :rtype: ckan.model.tag.PackageTag
+        :returns: the TagSemanticTag for the given tag name and semantic tag URI, or None
+            if there is no TagSemanticTag for those semantic tag and tag names
+        :rtype: ckan.model.tag_semanictag.TagSemanticTag
 
         '''
         
-        query = (meta.Session.query(PackageSemanticTag)
-                    .filter(_package.Package.name==package_name)
+        query = (meta.Session.query(TagSemanticTag)
+                    .filter(_tag.Tag.name==tag_name)
                     .filter(SemanticTag.URI==semantictag_URI))
         query = query.autoflush(autoflush)
         return query.one()[0]
 
-    def related_packages(self):
-        return [self.package]
+    def related_tags(self):
+        return [self.tags]
 
 meta.mapper(SemanticTag, semantictag_table, properties={
-    'package_semantictags': relation(PackageSemanticTag, backref='tag',
+    'tag_semantictags': relation(TagSemanticTag, backref='tag',
         cascade='all, delete, delete-orphan',
         )
     },
     order_by=semantictag_table.c.URI,
     )
 
-meta.mapper(PackageSemanticTag, package_semantictag_table, properties={
-    'pkg':relation(_package.Package, backref='package_semantictag_all',
+meta.mapper(TagSemanticTag, tag_semantictag_table, properties={
+    'pkg':relation(_tag.Tag, backref='tag_semantictag_all',
         cascade='none',
         )
     },
-    order_by=package_semantictag_table.c.id,
-    extension=[vdm.sqlalchemy.Revisioner(package_semantictag_revision_table),
+    order_by=tag_semantictag_table.c.id,
+    extension=[vdm.sqlalchemy.Revisioner(tag_semantictag_revision_table),
                _extension.PluginMapperExtension(),
                ],
     )
