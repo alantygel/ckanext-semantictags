@@ -32,12 +32,12 @@ tag_semantictag_table = Table('tag_semantictag', meta.metadata,
         Column('semantictag_id', types.UnicodeText, ForeignKey('semantictag.id')),
         )
 
-vdm.sqlalchemy.make_table_stateful(tag_semantictag_table)
+#vdm.sqlalchemy.make_table_stateful(tag_semantictag_table)
 # TODO: this has a composite primary key ...
-tag_semantictag_revision_table = core.make_revisioned_table(tag_semantictag_table)
+#tag_semantictag_revision_table = core.make_revisioned_table(tag_semantictag_table)
 
 class SemanticTag(domain_object.DomainObject):
-    def __init__(self, URI, label=''):
+    def __init__(self, URI=None, label=None):
         self.URI = URI
 	self.label = label
 
@@ -125,6 +125,17 @@ class SemanticTag(domain_object.DomainObject):
         return query
 
     @classmethod
+    def list_all(cls):
+        '''Return all semantic tags 
+
+        :returns: a list of all semantic tags 
+        :rtype: list of ckan.model.semantictag.SemanticTag objects
+
+        '''
+        query = meta.Session.query(SemanticTag)
+        return query
+ 
+    @classmethod
     def all(cls):
         '''Return all tags that are currently applied to any dataset.
 
@@ -142,7 +153,7 @@ class SemanticTag(domain_object.DomainObject):
 #        else:
         query = meta.Session.query(SemanticTag)
         query = query.distinct().join(TagSemanticTag)
-        query = query.filter_by(state='active')
+#        query = query.filter_by(state='active')
         return query
 
     @property
@@ -155,7 +166,7 @@ class SemanticTag(domain_object.DomainObject):
         q = meta.Session.query(_tag.Tag)
         q = q.join(TagSemanticTag)
         q = q.filter_by(tag_id=self.id)
-        q = q.filter_by(state='active')
+#        q = q.filter_by(state='active')
         q = q.order_by(_tag.Tag.name)
         tags = q.all()
         return tags
@@ -163,18 +174,22 @@ class SemanticTag(domain_object.DomainObject):
     def __repr__(self):
         return '<SemanticTag %s>' % self.URI
 
-class TagSemanticTag(vdm.sqlalchemy.RevisionedObjectMixin,
-        vdm.sqlalchemy.StatefulObjectMixin,
-        domain_object.DomainObject):
-    def __init__(self, tag=None, semantictag=None, state=None, **kwargs):
-        self.tag = tag
-        self.semantictag = semantictag
-        self.state = state
-        for k,v in kwargs.items():
-            setattr(self, k, v)
+#class TagSemanticTag(vdm.sqlalchemy.RevisionedObjectMixin,
+#        vdm.sqlalchemy.StatefulObjectMixin,
+#        domain_object.DomainObject):i
+
+class TagSemanticTag(domain_object.DomainObject):
+
+    def __init__(self, tag=None, semantictag=None):#, state=None): #, **kwargs):
+        self.tag_id = tag.id
+        self.semantictag_id = semantictag.id
+        #self.state = state
+	
+        #for k,v in kwargs.items():
+        #    setattr(self, k, v)
 
     def __repr__(self):
-        s = u'<TagSemanticTag tag=%s semantictag=%s>' % (self.tag.name, self.semantictag.URI)
+        s = u'<TagSemanticTag tag=%s semantictag=%s>' % (self.tag_id, self.semantictag_id)
         return s.encode('utf8')
 
     def activity_stream_detail(self, activity_id, activity_type):
@@ -229,6 +244,31 @@ class TagSemanticTag(vdm.sqlalchemy.RevisionedObjectMixin,
     def related_tags(self):
         return [self.tags]
 
+    @classmethod
+    def list_all(cls):
+        '''Return all tag semantic tags 
+
+        :returns: a list of all tag semantic tags 
+        :rtype: list of ckan.model.tagsemantictag.TagSemanticTag objects
+
+        '''
+        query = meta.Session.query(TagSemanticTag)
+        return query
+
+    @classmethod
+    def by_tag_id(self,tag_id):
+        '''Return all the semantic tag related to the given tag id
+
+        :returns: a semantic tag or None
+        :rtype: list of ckan.model.semantictag.SemanticTag object
+
+        '''
+        query = meta.Session.query(TagSemanticTag).filter(TagSemanticTag.tag_id==tag_id)
+        return query.first()
+
+meta.mapper(SemanticTag, semantictag_table)
+meta.mapper(TagSemanticTag, tag_semantictag_table)
+'''
 meta.mapper(SemanticTag, semantictag_table, properties={
     'tag_semantictags': relation(TagSemanticTag, backref='tag',
         cascade='all, delete, delete-orphan',
@@ -238,12 +278,13 @@ meta.mapper(SemanticTag, semantictag_table, properties={
     )
 
 meta.mapper(TagSemanticTag, tag_semantictag_table, properties={
-    'pkg':relation(_tag.Tag, backref='tag_semantictag_all',
+    'smtag':relation(_tag.Tag, backref='tag_semantictag_all',
         cascade='none',
         )
     },
     order_by=tag_semantictag_table.c.id,
-    extension=[vdm.sqlalchemy.Revisioner(tag_semantictag_revision_table),
-               _extension.PluginMapperExtension(),
-               ],
+#    extension=[vdm.sqlalchemy.Revisioner(tag_semantictag_revision_table),
+#               _extension.PluginMapperExtension(),
+#               ],
     )
+'''
