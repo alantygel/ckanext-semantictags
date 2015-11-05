@@ -51,7 +51,9 @@
         	<input type="submit" value="OK">
     	    </form>
      	{% endblock %}
-	
+		{% block loadtags %}	
+			{% link_for _('Load Global Tags'), controller='ckanext.semantictags.controller:SemantictagsController', action='load_global_tags', class_='read-more' %}
+     	{% endblock %}
 	{% else %}
 
 	<h1> public content here </h1>

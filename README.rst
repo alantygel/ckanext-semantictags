@@ -27,9 +27,11 @@ To install ckanext-semantictags:
 
 2. Install the ckanext-semantictags Python package into your virtual environment::
 
-git clone https://github.com/alantygel/ckanext-semantictags
-python setup.py develop
-paster --plugin=ckanext-semantictags semantictags migrate -c /etc/ckan/default/production.ini	
+	git clone https://github.com/alantygel/ckanext-semantictags
+
+	python setup.py develop
+
+	paster --plugin=ckanext-semantictags semantictags migrate -c /etc/ckan/default/production.ini	
 
 3. Add ``semantictags`` to the ``ckan.plugins`` setting in your CKAN
    config file (by default the config file is located at
