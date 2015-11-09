@@ -25,11 +25,14 @@
 
 	{% endblock %}
 	{% block list_relations %}
-	    <h2>{{_('Tags - Semantic Tags Assoiations')}}</h2>
+	    <h2>{{_('Tags - Semantic Tags Associations')}}</h2>
             {% set rels = h.semantictags_list_tag_semantictags() %}
 	    {% for relation in rels %}
             	<li> {{ h.semantictags_semantictag_show(relation.semantictag_id) }} | {{ h.semantictags_tag_show(relation.tag_id)}} </li>
-            {% endfor %}
+        {% endfor %}
+			
+		{% link_for _('Clear all associations'), controller='ckanext.semantictags.controller:SemantictagsController', action='clear_associations', class_='read-more' %}
+
 
 	{% endblock %}
 	{% block assoc_semantic_tag %}
@@ -54,6 +57,18 @@
 		{% block loadtags %}	
 			{% link_for _('Load Global Tags'), controller='ckanext.semantictags.controller:SemantictagsController', action='load_global_tags', class_='read-more' %}
      	{% endblock %}
+
+	{% block suggest_assoc_semantic_tag %}
+		<h2>{{_('Strong Suggestions for Association of Tags with Semantic Tags')}}</h2>
+		{% link_for _('Merge all tags with exact correspondent in global tag server'), controller='ckanext.semantictags.controller:SemantictagsController', action='associate_equal_tags', class_='read-more' %}
+		
+		{# set suggestions = h.semantictags_suggest_tag_semantictag() #}
+    	{# for sug in suggestions #}
+            <!--<p>{# sug[0].label #} - {# sug[1]['display_name'] #}</p>-->
+    	{# endfor #}
+		
+	{% endblock %}
+
 	{% else %}
 
 	<h1> public content here </h1>

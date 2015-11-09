@@ -6,6 +6,7 @@ from ckan.lib.base import BaseController, response, request
 import json
 import db
 import ckan.model as model
+import plugin
 
 c = p.toolkit.c
 render = p.toolkit.render
@@ -44,7 +45,7 @@ class SemantictagsController(BaseController):
 			gtag_list_dict = json.loads(global_tags_response.read())	
 			gtag_list = gtag_list_dict["results"]
 			for tag in gtag_list:
-				x = db.SemanticTag(gtag_list_dict["results"][tag]["fullurl"], gtag_list_dict["results"][tag]["fullurl"])
+				x = db.SemanticTag(gtag_list_dict["results"][tag]["fullurl"], gtag_list_dict["results"][tag]["fulltext"])
 				x.save()
 				#print gtag_list_dict["results"][tag]["fulltext"] + " " + gtag_list_dict["results"][tag]["fullurl"]
 
@@ -52,6 +53,26 @@ class SemantictagsController(BaseController):
 			print "fails"
 
 		return render('semantictags/index.html')
+
+	def delete_global_tags(self):
+		#x = db.SemanticTag.query("TRUNCATE TABLE semantictag CASCADE;")
+		#x.save()
+		return render('semantictags/index.html')
+
+	def clear_associations(self):
+		#x = db.SemanticTag.query("TRUNCATE TABLE tag_semantictag;")
+		#x.save()
+		return render('semantictags/index.html')
+
+	def associate_equal_tags(self):
+		suggestions = plugin.suggest_tag_semantictag()
+		for sug in suggestions:
+			#print sug[0].id
+			#print sug[1]['id']
+			x = db.TagSemanticTag(model.tag.Tag.by_id(sug[1]['id']), sug[0])	
+			x.save()
+		return render('semantictags/index.html')
+
 
 
 #    def delete(self):
