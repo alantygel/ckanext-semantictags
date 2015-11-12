@@ -32,7 +32,7 @@ tag_semantictag_table = Table('tag_semantictag', meta.metadata,
 		Column('semantictag_id', types.UnicodeText, ForeignKey('semantictag.id')),
 		)
 
-#vdm.sqlalchemy.make_table_stateful(tag_semantictag_table)
+vdm.sqlalchemy.make_table_stateful(tag_semantictag_table)
 # TODO: this has a composite primary key ...
 #tag_semantictag_revision_table = core.make_revisioned_table(tag_semantictag_table)
 
@@ -44,6 +44,7 @@ class SemanticTag(domain_object.DomainObject):
 	# not stateful so same as purge
 	def delete(self):
 		self.purge()
+		return
 
 	@classmethod
 	def by_id(cls, semantictag_id, autoflush=True):
@@ -252,7 +253,7 @@ class TagSemanticTag(domain_object.DomainObject):
 		:rtype: list of ckan.model.tagsemantictag.TagSemanticTag objects
 
 		'''
-		query = meta.Session.query(TagSemanticTag)
+		query = meta.Session.query(TagSemanticTag).filter(TagSemanticTag.tag_id != '')
 		return query
 
 	@classmethod
@@ -266,11 +267,21 @@ class TagSemanticTag(domain_object.DomainObject):
 		query = meta.Session.query(TagSemanticTag).filter(TagSemanticTag.tag_id==tag_id)
 		return query.first()
 
-meta.mapper(SemanticTag, semantictag_table)
-meta.mapper(TagSemanticTag, tag_semantictag_table)
-'''
+	@classmethod
+	def get(self,id):
+		'''Return all the semantic tag related to the given tag id
+
+		:returns: a semantic tag or None
+		:rtype: list of ckan.model.semantictag.SemanticTag object
+
+		'''
+		query = meta.Session.query(TagSemanticTag).filter(TagSemanticTag.id==id)
+		return query.first()
+
+
+
 meta.mapper(SemanticTag, semantictag_table, properties={
-	'tag_semantictags': relation(TagSemanticTag, backref='tag',
+	'tag_semantictags': relation(TagSemanticTag, backref='semantictag',
 		cascade='all, delete, delete-orphan',
 		)
 	},
@@ -278,13 +289,23 @@ meta.mapper(SemanticTag, semantictag_table, properties={
 	)
 
 meta.mapper(TagSemanticTag, tag_semantictag_table, properties={
-	'smtag':relation(_tag.Tag, backref='tag_semantictag_all',
-		cascade='none',
+	'tag': relation(_tag.Tag, backref='tag_semantictag_all',
+		cascade='all, delete, delete-orphan', single_parent=True
 		)
 	},
-	order_by=tag_semantictag_table.c.id,
-#	extension=[vdm.sqlalchemy.Revisioner(tag_semantictag_revision_table),
-#			   _extension.PluginMapperExtension(),
-#			   ],
+	order_by=tag_semantictag_table.c.tag_id,
 	)
-'''
+#TODO: This code is deleting only the value of tag_id - should delete the whole row
+
+
+#meta.mapper(TagSemanticTag, tag_semantictag_table, properties={
+#	'smtag':relation(_tag.Tag, backref='tag_semantictag_all',
+#		cascade='none',
+#		)
+#	},
+#	order_by=tag_semantictag_table.c.id,
+##	extension=[vdm.sqlalchemy.Revisioner(tag_semantictag_revision_table),
+##			   _extension.PluginMapperExtension(),
+##			   ],
+#	)
+

@@ -73,6 +73,17 @@ class SemantictagsController(BaseController):
 			x.save()
 		return render('semantictags/index.html')
 
+	def remove_semantictag(self):
+		x = db.SemanticTag.get(request.GET['id'])
+		x.delete()
+		x.commit()
+		return render('semantictags/index.html')
+
+	def remove_tag_semantictag(self):
+		x = db.TagSemanticTag.get(request.GET['id'])
+		x.delete()
+		x.commit()
+		return render('semantictags/index.html')
 
 
 #    def delete(self):

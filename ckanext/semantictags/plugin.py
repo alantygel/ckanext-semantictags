@@ -57,6 +57,8 @@ class SemantictagsPlugin(plugins.SingletonPlugin):
 		map.connect('/semantictags/load_global_tags', controller=semantictags, action='load_global_tags')	
 		map.connect('/semantictags/clear_associations', controller=semantictags, action='clear_associations')	
 		map.connect('/semantictags/associate_equal_tags', controller=semantictags, action='associate_equal_tags')	
+		map.connect('/semantictags/remove_semantictag', controller=semantictags, action='remove_semantictag')	
+		map.connect('/semantictags/remove_tag_semantictag', controller=semantictags, action='remove_tag_semantictag')	
 
 		return map
 

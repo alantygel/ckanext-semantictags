@@ -31,7 +31,7 @@ To install ckanext-semantictags:
 
 	python setup.py develop
 
-	paster --plugin=ckanext-semantictags semantictags migrate -c /etc/ckan/default/production.ini	
+	paster --plugin=ckanext-semantictags semantictags migrate -c /etc/ckan/default/development.ini	
 
 3. Add ``semantictags`` to the ``ckan.plugins`` setting in your CKAN
    config file (by default the config file is located at
