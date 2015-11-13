@@ -17,6 +17,15 @@ class SemantictagsController(BaseController):
 	def index(self):
 		return render('semantictags/index.html')
 
+	def show_semantictags(self):
+		return render('semantictags/semantictags.html')
+
+	def show_tag_semantictags(self):
+		return render('semantictags/tag_semantictags.html')
+
+	def show_suggestions(self):
+		return render('semantictags/suggestions.html')
+
 	def associate(self):
 		x = db.TagSemanticTag(model.tag.Tag.by_id(request.POST['tag_id']), db.SemanticTag.by_URI(request.POST['URI']))
 		#x.semantictag = db.SemanticTag.by_URI(request.POST['URI'])
@@ -59,16 +68,9 @@ class SemantictagsController(BaseController):
 		#x.save()
 		return render('semantictags/index.html')
 
-	def clear_associations(self):
-		#x = db.SemanticTag.query("TRUNCATE TABLE tag_semantictag;")
-		#x.save()
-		return render('semantictags/index.html')
-
 	def associate_equal_tags(self):
 		suggestions = plugin.suggest_tag_semantictag()
 		for sug in suggestions:
-			#print sug[0].id
-			#print sug[1]['id']
 			x = db.TagSemanticTag(model.tag.Tag.by_id(sug[1]['id']), sug[0])	
 			x.save()
 		return render('semantictags/index.html')
@@ -79,30 +81,24 @@ class SemantictagsController(BaseController):
 		x.commit()
 		return render('semantictags/index.html')
 
+	def remove_all_semantictag(self):
+		all_ = db.SemanticTag.list_all()
+		for x in all_:
+			x.delete()
+			x.commit()
+		return render('semantictags/index.html')
+
+
 	def remove_tag_semantictag(self):
 		x = db.TagSemanticTag.get(request.GET['id'])
 		x.delete()
 		x.commit()
 		return render('semantictags/index.html')
 
-
-#    def delete(self):
-#        p.toolkit.get_action('tag_delete')({},{'id': request.POST['tag']})
-#        return render('tagmanager/index.html')
-
-#    def merge(self):
-#        "assign all elements tagged with tag2 with tag1; delete tag2"
-
-#        tag2_datasets = p.toolkit.get_action('tag_show')({},{'id' : request.POST['tag2'], 'include_datasets': True})
-
-#        for ds in tag2_datasets['packages']:
-#            dataset = p.toolkit.get_action('package_show')({},{'id': ds['id'] })
-#            dataset['tags'].append(p.toolkit.get_action('tag_show')({},{'id':request.POST['tag1']}))
-#            p.toolkit.get_action('package_update')({},dataset)
-
-#        p.toolkit.get_action('tag_delete')({},{'id': request.POST['tag2']})
-
-#        #p.toolkit.redirect_to(controller='tagmanager', action='index')
-
-#        return render('tagmanager/index.html')
+	def remove_all_tag_semantictag(self):
+		all_ = db.TagSemanticTag.list_all()
+		for x in all_:
+			x.delete()
+			x.commit()
+		return render('semantictags/index.html')
 

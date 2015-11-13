@@ -1,0 +1,33 @@
+{% extends "page.html" %}
+
+
+{% block subtitle %}{{ _("Semantic Tags") }}{% endblock %}
+
+{% block breadcrumb_content %}
+  <li class="active">{{ h.nav_link(_('Tags Manager'), controller='package', action='search', highlight_actions = 'new index') }}</li>
+{% endblock %}
+
+{% block primary_content %}
+
+	{% block static_styles %}
+		<link rel="stylesheet" type="text/css" href="css/default.css" />
+	{% endblock %}
+	
+	{% block suggest_assoc_semantic_tag %}
+		<h2>{{_('Strong Suggestions for Association of Tags with Semantic Tags')}}</h2>
+		{% link_for _('Merge all tags with exact correspondent in global tag server'), controller='ckanext.semantictags.controller:SemantictagsController', action='associate_equal_tags', class_='read-more' %}
+	
+		{# set suggestions = h.semantictags_suggest_tag_semantictag() #}
+		{# for sug in suggestions #}
+		    <!--<p>{# sug[0].label #} - {# sug[1]['display_name'] #}</p>-->
+		{# endfor #}
+	
+	{% endblock %}
+
+
+{% endblock %} <!--primary content -->
+
+{% block secondary_content %}
+  {% snippet "semantictags/snippets/menu.html" %}
+{% endblock %}
+

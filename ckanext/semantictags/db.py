@@ -134,7 +134,7 @@ class SemanticTag(domain_object.DomainObject):
 
 		'''
 		query = meta.Session.query(SemanticTag)
-		return query
+		return query.all()
  
 	@classmethod
 	def all(cls):
@@ -246,8 +246,8 @@ class TagSemanticTag(domain_object.DomainObject):
 		return [self.tags]
 
 	@classmethod
-	def list_all(cls):
-		'''Return all tag semantic tags 
+	def list_all_valid(cls):
+		'''Return all tag semantic tags with valid non void tags
 
 		:returns: a list of all tag semantic tags 
 		:rtype: list of ckan.model.tagsemantictag.TagSemanticTag objects
@@ -255,6 +255,17 @@ class TagSemanticTag(domain_object.DomainObject):
 		'''
 		query = meta.Session.query(TagSemanticTag).filter(TagSemanticTag.tag_id != '')
 		return query
+
+	@classmethod
+	def list_all(cls):
+		'''Return all tag semantic tags 
+
+		:returns: a list of all tag semantic tags 
+		:rtype: list of ckan.model.tagsemantictag.TagSemanticTag objects
+
+		'''
+		query = meta.Session.query(TagSemanticTag)
+		return query.all()
 
 	@classmethod
 	def by_tag_id(self,tag_id):

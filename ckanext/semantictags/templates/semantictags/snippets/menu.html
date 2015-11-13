@@ -1,0 +1,15 @@
+<div class="module module-narrow module-shallow">
+  <h2 class="module-heading">
+    <i class="icon-info-sign"></i>
+    {{ _('Tag Management') }}
+  </h2>
+  <div class="module-content">
+    <p>
+		<ul style="list-style:none">
+			<li style="margin-bottom:10px">{% link_for _('Semantic Tags'), controller='ckanext.semantictags.controller:SemantictagsController', action='show_semantictags', class_='read-more' %}</li>
+			<li style="margin-bottom:10px">{% link_for _('Associations'), controller='ckanext.semantictags.controller:SemantictagsController', action='show_tag_semantictags', class_='read-more' %}</li>
+			<li style="margin-bottom:10px">{% link_for _('Suggestions for association'), controller='ckanext.semantictags.controller:SemantictagsController', action='show_suggestions', class_='read-more' %}</li>
+		</ul>
+    </p>
+  </div>
+</div>

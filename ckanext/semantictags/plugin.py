@@ -10,7 +10,7 @@ def list_semantictags():
 	return db.SemanticTag.list_all()
 
 def list_tag_semantictags():
-	return db.TagSemanticTag.list_all()
+	return db.TagSemanticTag.list_all_valid()
 
 def tag_show(id):
 	return model.tag.Tag.by_id(id).name
@@ -51,14 +51,18 @@ class SemantictagsPlugin(plugins.SingletonPlugin):
 		semantictags = 'ckanext.semantictags.controller:SemantictagsController'
 
 		map.connect('/semantictags', 'semantictags', controller=semantictags, action='index')
+		map.connect('/semantictags/show_semantictags', controller=semantictags, action='show_semantictags')
+		map.connect('/semantictags/show_tag_semantictags', controller=semantictags, action='show_tag_semantictags')
+		map.connect('/semantictags/show_suggestions', controller=semantictags, action='show_suggestions')
 		map.connect('/semantictags', controller=semantictags, action='index')
 		map.connect('/semantictags/associate', controller=semantictags, action='associate')
 		map.connect('/semantictags/add_semantictag', controller=semantictags, action='add_semantictag')
 		map.connect('/semantictags/load_global_tags', controller=semantictags, action='load_global_tags')	
-		map.connect('/semantictags/clear_associations', controller=semantictags, action='clear_associations')	
 		map.connect('/semantictags/associate_equal_tags', controller=semantictags, action='associate_equal_tags')	
 		map.connect('/semantictags/remove_semantictag', controller=semantictags, action='remove_semantictag')	
+		map.connect('/semantictags/remove_all_semantictag', controller=semantictags, action='remove_all_semantictag')	
 		map.connect('/semantictags/remove_tag_semantictag', controller=semantictags, action='remove_tag_semantictag')	
+		map.connect('/semantictags/remove_all_tag_semantictag', controller=semantictags, action='remove_all_tag_semantictag')	
 
 		return map
 
