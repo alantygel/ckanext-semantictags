@@ -4,7 +4,7 @@
 {% block subtitle %}{{ _("Semantic Tags") }}{% endblock %}
 
 {% block breadcrumb_content %}
-  <li class="active">{{ h.nav_link(_('Tags Manager'), controller='package', action='search', highlight_actions = 'new index') }}</li>
+	{% snippet "semantictags/snippets/breadcrumb.html" %}
 {% endblock %}
 
 {% block primary_content %}

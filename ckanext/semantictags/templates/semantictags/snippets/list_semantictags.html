@@ -1,0 +1,9 @@
+<h2>{{_('Semantic Tags')}}</h2>
+<ul>
+{% set st = h.semantictags_list_semantictags() %}
+{% for tag in st %}
+	<li> <a target='_blank' href='{{ tag.URI }}'>{{ tag.label }}</a> {%link_for _('(x)'), controller='ckanext.semantictags.controller:SemantictagsController', action='remove_semantictag', class_='read-more', id=tag.id %}  </li>
+{% endfor %}
+</ul>
+{% link_for _('Clear all Semantic Tags'), controller='ckanext.semantictags.controller:SemantictagsController', action='remove_all_semantictag', class_='read-more' %}
+

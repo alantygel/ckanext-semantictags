@@ -3,49 +3,43 @@
 {% block subtitle %}{{ _("Semantic Tags") }}{% endblock %}
 
 {% block breadcrumb_content %}
-  <li class="active">{{ h.nav_link(_('Tags Manager'), controller='package', action='search', highlight_actions = 'new index') }}</li>
+	{% snippet "semantictags/snippets/breadcrumb.html" %}
 {% endblock %}
 
-{% block primary_content %}
+{% block page_header %}{% endblock %}
+
+{% block primary_content_inner %}
 
 	{% block static_styles %}
 		<link rel="stylesheet" type="text/css" href="css/default.css" />
 	{% endblock %}
 
-	{% block assoc_semantic_tag %}
-	    <h2>{{_('Associate Tags with Semantic Tags')}}</h2>
-    	    <form action="/semantictags/associate" method="POST">
-                <select name="tag_id">
-            	{% set tl = h.semantictags_list_tags() %}
-	        {% for tag in tl %}
-                    <option value={{ tag.id }}>{{ tag.name }}</option>
-            	{% endfor %}
-        	</select> 
-		{{_('and')}}
-        	<select name="URI">
-            	{% set tl = h.semantictags_list_semantictags() %}
-            	{% for tag in tl %}
-                    <option value={{ tag.URI }}>{{ tag.label }}</option>
-            	{% endfor %}
-        	</select>
-        	<input type="submit" value="OK">
-    	    </form>
-     	{% endblock %}
+	<h1 class="hide-heading">{{ _('SemanticTags') }}</h1>
+	<p><b><em> {{ _('Welcome to the CKAN SemanticTags Plugin.') }}</em></b> <br><br>  	  
 
-	{% block suggest_assoc_semantic_tag %}
-		<h2>{{_('Strong Suggestions for Association of Tags with Semantic Tags')}}</h2>
-		{% link_for _('Merge all tags with exact correspondent in global tag server'), controller='ckanext.semantictags.controller:SemantictagsController', action='associate_equal_tags', class_='read-more' %}
+	<p>With this extension, you can associate your CKAN tags to Semantic Resources on the Linked Open Data cloud. After doing this, the RDF resource of your datasets will be linked to these resources.</p>
+
+
+	{% if h.semantictags_list_semantictags() %}
+		{% block assoc_semantic_tag %}
+			{% snippet "semantictags/snippets/associate_form.html" %}
+	 	{% endblock %}
+
+	{% else %}	
+		<h3>Start by {% link_for _('adding some semantics tags'), controller='ckanext.semantictags.controller:SemantictagsController', action='show_semantictags' %}</h3>
+	{% endif %}
+
+
+	{# block suggest_assoc_semantic_tag #}
+		<!--<h2>{{_('Strong Suggestions for Association of Tags with Semantic Tags')}}</h2>-->
+		{# link_for _('Merge all tags with exact correspondent in global tag server'), controller='ckanext.semantictags.controller:SemantictagsController', action='associate_equal_tags', class_='read-more' #}
 		
 		{# set suggestions = h.semantictags_suggest_tag_semantictag() #}
     	{# for sug in suggestions #}
             <!--<p>{# sug[0].label #} - {# sug[1]['display_name'] #}</p>-->
     	{# endfor #}
 		
-	{% endblock %}
-
-	{% block loadtags %}	
-		{% link_for _('Load Global Tags'), controller='ckanext.semantictags.controller:SemantictagsController', action='load_global_tags', class_='read-more' %}
- 	{% endblock %}
+	{# endblock #}
 
 {% endblock %} <!--primary content -->
 

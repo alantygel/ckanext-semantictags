@@ -2,7 +2,6 @@ import vdm.sqlalchemy
 from sqlalchemy.orm import relation
 from sqlalchemy import types, Column, Table, ForeignKey, and_, UniqueConstraint
 
-
 import ckan.model.tag as _tag
 import ckan.model.extension as _extension
 import ckan.model.core as core
@@ -13,7 +12,7 @@ import ckan.model.activity as activity
 import ckan  # this import is needed
 import ckan.lib.dictization
 
-__all__ = ['semantictag_table', 'tag_semantictag_table', 'SemanticTag', 'TagSemanticTag',
+__all__ = ['semantictag_table', 'predicate_table', 'tag_semantictag_table', 'SemanticTag', 'Predicate', 'TagSemanticTag',
 		   'tag_semantictag_revision_table',
 		   'MAX_TAG_LENGTH', 'MIN_TAG_LENGTH']
 
@@ -26,10 +25,16 @@ semantictag_table = Table('semantictag', meta.metadata,
 		Column('label', types.Unicode(MAX_TAG_LENGTH))
 )
 
+predicate_table = Table('predicate', meta.metadata,
+		Column('id', types.UnicodeText, primary_key=True, default=_types.make_uuid),
+		Column('URI', types.Unicode(MAX_TAG_LENGTH), nullable=False),
+		Column('label', types.Unicode(MAX_TAG_LENGTH))
+)
+
 tag_semantictag_table = Table('tag_semantictag', meta.metadata,
 		Column('id', types.UnicodeText, primary_key=True, default=_types.make_uuid),
-		Column('tag_id', types.UnicodeText, ForeignKey('tag.id')),
-		Column('semantictag_id', types.UnicodeText, ForeignKey('semantictag.id')),
+		Column('tag_id', types.UnicodeText, ForeignKey('tag.id',ondelete="CASCADE")),
+		Column('semantictag_id', types.UnicodeText, ForeignKey('semantictag.id',ondelete="CASCADE")),
 		)
 
 vdm.sqlalchemy.make_table_stateful(tag_semantictag_table)
@@ -179,6 +184,65 @@ class SemanticTag(domain_object.DomainObject):
 #		vdm.sqlalchemy.StatefulObjectMixin,
 #		domain_object.DomainObject):i
 
+class Predicate(domain_object.DomainObject):
+	def __init__(self, URI=None, label=None):
+		self.URI = URI
+		self.label = label
+
+	# not stateful so same as purge
+	def delete(self):
+		self.purge()
+		return
+
+	@classmethod
+	def by_id(cls, predicate_id, autoflush=True):
+		'''Return the predicate with the given id, or None.
+
+		:param predicate_id: the id of the predicate to return
+		:type predicate_id: string
+
+		:returns: the predicate with the given id, or None if there is no predicate with
+			that id
+		:rtype: ckan.model.semantictag.Predicate
+
+		'''
+		query = meta.Session.query(Predicate).filter(Predicate.id==predicate_id)
+		query = query.autoflush(autoflush)
+		return query.first()
+
+	@classmethod
+	def by_URI(cls, URI, label=None, autoflush=True):
+		'''Return the Predicate with the given URI, or None.
+
+		:param URI: the URI of the semantic tag to return
+		:type URI: string (URI format)
+		:param label: URI's label (optional, default: None)
+		:type label: string
+
+		:returns: the predicate object with the given id or URI, or None if there is
+			no Predicate with that id or name
+		:rtype: ckan.model.semantictag.Predicate
+
+		'''
+		if label:
+			query = meta.Session.query(Predicate).filter(Predicate.label==label)
+		else:
+			query = meta.Session.query(Predicate).filter(Predicate.URI==URI)
+		query = query.autoflush(autoflush)
+		return query.first()
+
+	@classmethod
+	def list_all(cls):
+		'''Return all predicates
+
+		:returns: a list of all predicates 
+		:rtype: list of ckan.model.semantictag.Predicate objects
+
+		'''
+		query = meta.Session.query(Predicate)
+		return query.all()
+ 
+
 class TagSemanticTag(domain_object.DomainObject):
 
 	def __init__(self, tag=None, semantictag=None):#, state=None): #, **kwargs):
@@ -246,17 +310,6 @@ class TagSemanticTag(domain_object.DomainObject):
 		return [self.tags]
 
 	@classmethod
-	def list_all_valid(cls):
-		'''Return all tag semantic tags with valid non void tags
-
-		:returns: a list of all tag semantic tags 
-		:rtype: list of ckan.model.tagsemantictag.TagSemanticTag objects
-
-		'''
-		query = meta.Session.query(TagSemanticTag).filter(TagSemanticTag.tag_id != '')
-		return query
-
-	@classmethod
 	def list_all(cls):
 		'''Return all tag semantic tags 
 
@@ -292,22 +345,18 @@ class TagSemanticTag(domain_object.DomainObject):
 
 
 meta.mapper(SemanticTag, semantictag_table, properties={
-	'tag_semantictags': relation(TagSemanticTag, backref='semantictag',
-		cascade='all, delete, delete-orphan',
-		)
+	'tag_semantictags': relation(TagSemanticTag, backref='semantictag')
 	},
 	order_by=semantictag_table.c.URI,
 	)
 
 meta.mapper(TagSemanticTag, tag_semantictag_table, properties={
-	'tag': relation(_tag.Tag, backref='tag_semantictag_all',
-		cascade='all, delete, delete-orphan', single_parent=True
-		)
+	'tag': relation(_tag.Tag, backref='tag_semantictag_all')
 	},
 	order_by=tag_semantictag_table.c.tag_id,
 	)
-#TODO: This code is deleting only the value of tag_id - should delete the whole row
 
+meta.mapper(Predicate, predicate_table,order_by=predicate_table.c.URI)
 
 #meta.mapper(TagSemanticTag, tag_semantictag_table, properties={
 #	'smtag':relation(_tag.Tag, backref='tag_semantictag_all',

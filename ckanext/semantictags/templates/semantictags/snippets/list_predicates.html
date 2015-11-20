@@ -1,0 +1,9 @@
+<h2>{{_('Predicates')}}</h2>
+<ul>
+{% set predicates = h.semantictags_list_predicates() %}
+{% for pred in predicates %}
+	<li> <a target='_blank' href='{{ pred.URI }}'>{{ pred.label }}</a> {%link_for _('(x)'), controller='ckanext.semantictags.controller:SemantictagsController', action='remove_predicate', class_='read-more', id=pred.id %}  </li>
+{% endfor %}
+</ul>
+{% link_for _('Clear all predicates'), controller='ckanext.semantictags.controller:SemantictagsController', action='remove_all_predicates', class_='read-more' %}
+

@@ -1,0 +1,37 @@
+{% extends "page.html" %}
+
+{% block subtitle %}{{ _("Predicates") }}{% endblock %}
+
+{% block breadcrumb_content %}
+	{% snippet "semantictags/snippets/breadcrumb.html" %}
+{% endblock %}
+
+{% block page_header %}{% endblock %}
+
+{% block primary_content_inner %}
+
+	{% block static_styles %}
+		<link rel="stylesheet" type="text/css" href="css/default.css" />
+	{% endblock %}
+
+	<h1 class="hide-heading">{{ _('Predicates') }}</h1>
+	<p><b><em> {{ _('Welcome to the CKAN SemanticTags Plugin.') }}</em></b> <br><br>  	  
+
+	<p>By deafult, Semantic Tag will the attributed to datasets using the muto:taggedBy predicate. If you want to use others, please add it here.</p>
+
+
+	{% block add_predicate %}
+		{% snippet 'semantictags/snippets/predicate_form.html' %}
+	{% endblock %}
+
+	{% block show_predicates %}
+		{% snippet 'semantictags/snippets/list_predicates.html' %}
+	{% endblock %}
+
+
+{% endblock %} <!--primary content -->
+
+{% block secondary_content %}
+  {% snippet "semantictags/snippets/menu.html" %}
+{% endblock %}
+

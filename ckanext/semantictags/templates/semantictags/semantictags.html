@@ -1,41 +1,48 @@
 {% extends "page.html" %}
 
-
 {% block subtitle %}{{ _("Semantic Tags") }}{% endblock %}
 
 {% block breadcrumb_content %}
-  <li class="active">{{ h.nav_link(_('Tags Manager'), controller='package', action='search', highlight_actions = 'new index') }}</li>
+	{% snippet "semantictags/snippets/breadcrumb.html" %}
 {% endblock %}
 
-{% block primary_content %}
+{% block page_header %}{% endblock %}
+
+{% block primary_content_inner %}
 
 	{% block static_styles %}
 		<link rel="stylesheet" type="text/css" href="css/default.css" />
 	{% endblock %}
 
+	<h1 class="hide-heading">{{ _('SemanticTags') }}</h1>
+	<p><b><em> {{ _('Welcome to the CKAN SemanticTags Plugin.') }}</em></b> <br><br>  	  
+
 	{% block add_semantic_tag %}
-	    <h2>{{_('Add Semantic Tags')}}</h2>
-	    <form action="/semantictags/add_semantictag" method="POST">
-		URI: <input type="text" name="URI" />
-		Label: <input type="text" name="label" />
-		<input type="submit" />
-	    </form>
+		{% snippet 'semantictags/snippets/semantictag_form.html' %}
 	{% endblock %}
 
-	{% block loadtags %}	
-		{% link_for _('Load Global Tags'), controller='ckanext.semantictags.controller:SemantictagsController', action='load_global_tags', class_='read-more' %}
+	{% block load_global_tags %}
+<style>
+a.button {
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    appearance: button;
+
+    text-decoration: none;
+    color: initial;
+}
+</style>
+	
+		{% link_for _('Load Global Tags'), controller='ckanext.semantictags.controller:SemantictagsController', action='load_global_tags', class_='button' %} 
+		Click this option to load global tags defined in the <a target='_blank' href="http://stodap.org/">STODaP server</a>. 
  	{% endblock %}
 
-	{% block semantictags %}
-	    <h2>{{_('Semantic Tags')}}</h2>
-		{% set st = h.semantictags_list_semantictags() %}
-	    {% for tag in st %}
-         <li> {{ tag.label }} {%link_for _('(x)'), controller='ckanext.semantictags.controller:SemantictagsController', action='remove_semantictag', class_='read-more', id=tag.id %}  </li>
-        {% endfor %}
+	{% if h.semantictags_list_semantictags() %}
+		{% block semantictags %}
+			{% snippet 'semantictags/snippets/list_semantictags.html' %}
+		{% endblock %}
+	{% endif %}
 
-		{% link_for _('Clear all Semantic Tags'), controller='ckanext.semantictags.controller:SemantictagsController', action='remove_all_semantictag', class_='read-more' %}
-
-	{% endblock %}
 
 {% endblock %} <!--primary content -->
 

@@ -1,48 +1,40 @@
 {% extends "page.html" %}
 
-
 {% block subtitle %}{{ _("Semantic Tags") }}{% endblock %}
 
 {% block breadcrumb_content %}
-  <li class="active">{{ h.nav_link(_('Tags Manager'), controller='package', action='search', highlight_actions = 'new index') }}</li>
+	{% snippet "semantictags/snippets/breadcrumb.html" %}
 {% endblock %}
 
-{% block primary_content %}
+{% block page_header %}{% endblock %}
+
+{% block primary_content_inner %}
 
 	{% block static_styles %}
 		<link rel="stylesheet" type="text/css" href="css/default.css" />
 	{% endblock %}
 
-	{% block assoc_semantic_tag %}
-	    <h2>{{_('Associate Tags with Semantic Tags')}}</h2>
-    	    <form action="/semantictags/associate" method="POST">
-                <select name="tag_id">
-            	{% set tl = h.semantictags_list_tags() %}
-	        {% for tag in tl %}
-                    <option value={{ tag.id }}>{{ tag.name }}</option>
-            	{% endfor %}
-        	</select> 
-		{{_('and')}}
-        	<select name="URI">
-            	{% set tl = h.semantictags_list_semantictags() %}
-            	{% for tag in tl %}
-                    <option value={{ tag.URI }}>{{ tag.label }}</option>
-            	{% endfor %}
-        	</select>
-        	<input type="submit" value="OK">
-    	    </form>
-     	{% endblock %}
+	<h1 class="hide-heading">{{ _('SemanticTags') }}</h1>
+	<p><b><em> {{ _('Welcome to the CKAN SemanticTags Plugin.') }}</em></b> <br><br>  	  
 
-	{% block list_tag_semantictags %}
-	    <h2>{{_('Tags - Semantic Tags Associations')}}</h2>
-            {% set rels = h.semantictags_list_tag_semantictags() %}
-	    {% for relation in rels %}
-            	<li>{{ h.semantictags_semantictag_show(relation.semantictag_id) }} | {{ h.semantictags_tag_show(relation.tag_id) }} {% link_for _('(x)'), controller='ckanext.semantictags.controller:SemantictagsController', action='remove_tag_semantictag', class_='read-more', id=relation.id %}</li>
-        {% endfor %}
-			
-		{% link_for _('Clear all associations'), controller='ckanext.semantictags.controller:SemantictagsController', action='remove_all_tag_semantictag', class_='read-more'%}
-	{% endblock %}
 
+	{% if h.semantictags_list_semantictags() %}
+		{% block assoc_semantic_tag %}
+			{% snippet "semantictags/snippets/associate_form.html" %}
+	 	{% endblock %}
+
+		{% if h.semantictags_list_tag_semantictags() %}
+			{% block list_tag_semantictags %}
+				{% snippet "semantictags/snippets/list_tag_semantictags.html" %}
+			{% endblock %}
+		{% endif %}
+
+	{% else %}	
+		<h3>You don't have any Semantic Tag. Start by {% link_for _('adding some'), controller='ckanext.semantictags.controller:SemantictagsController', action='show_semantictags' %}.</h3>
+	{% endif %}
+
+
+	
 {% endblock %} <!--primary content -->
 
 {% block secondary_content %}

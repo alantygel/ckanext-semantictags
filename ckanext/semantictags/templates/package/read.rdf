@@ -14,8 +14,14 @@
     {% for tag_dict in c.pkg_dict['tags'] %}
         <dcat:keyword>{{ tag_dict["name"] }}</dcat:keyword>
 	{% set semantictag = h.semantictags_find_tag_semantictag(tag_dict["id"]) %}
+	{% set predicates = h.semantictags_list_predicates() %}
 	{% if semantictag %}
 		<muto:taggedWith rdf:resource="{{ semantictag.URI }}" />
+		{% if predicates %}
+			{% for pred in predicates %}
+		<{{ pred.URI }} rdf:resource="{{ semantictag.URI }}" />
+			{% endfor %}
+		{% endif %}
 	{% endif %}
     {% endfor %}
     <foaf:homepage rdf:resource="{{ h.url_for(controller='package',action='read',id=c.pkg_dict['name'], qualified=True)}}"/>

@@ -1,0 +1,18 @@
+<h2>{{_('Associate Tags with Semantic Tags')}}</h2>
+
+<form action="/semantictags/associate" method="POST">
+    <select name="tag_id">
+	{% set tl = h.semantictags_list_tags() %}
+	{% for tag in tl %}
+        <option value={{ tag.id }}>{{ tag.name }}</option>
+	{% endfor %}
+	</select> 
+	{{_('and')}}
+	<select name="URI">
+		{% set tl = h.semantictags_list_semantictags() %}
+		{% for tag in tl %}
+		    <option value={{ tag.URI }}>{{ tag.label }}</option>
+		{% endfor %}
+	</select>
+	<input type="submit" value="OK">
+</form>

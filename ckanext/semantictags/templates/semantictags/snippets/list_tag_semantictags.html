@@ -1,0 +1,7 @@
+	    <h2>{{_('Tags - Semantic Tags Associations')}}</h2>
+            {% set rels = h.semantictags_list_tag_semantictags() %}
+	    {% for relation in rels %}
+            	<li>{{ h.semantictags_semantictag_show(relation.semantictag_id) }} | {{ h.semantictags_tag_show(relation.tag_id) }} {% link_for _('(x)'), controller='ckanext.semantictags.controller:SemantictagsController', action='remove_tag_semantictag', class_='read-more', id=relation.id %}</li>
+        {% endfor %}
+			
+		{% link_for _('Clear all associations'), controller='ckanext.semantictags.controller:SemantictagsController', action='remove_all_tag_semantictag', class_='read-more'%}

@@ -26,17 +26,26 @@ class SemantictagsController(BaseController):
 	def show_suggestions(self):
 		return render('semantictags/suggestions.html')
 
+	def show_predicates(self):
+		return render('semantictags/predicates.html')
+
 	def associate(self):
 		x = db.TagSemanticTag(model.tag.Tag.by_id(request.POST['tag_id']), db.SemanticTag.by_URI(request.POST['URI']))
 		#x.semantictag = db.SemanticTag.by_URI(request.POST['URI'])
 		#x.tag = model.tag.Tag.by_id(request.POST['tag_id'])
 		x.save()
-		return render('semantictags/index.html')
+		return render('semantictags/tag_semantictags.html')
 
 	def add_semantictag(self):
 		x = db.SemanticTag(request.POST['URI'], request.POST['label'])
 		x.save()
-		return render('semantictags/index.html')
+		return render('semantictags/semantictags.html')
+
+	def add_predicate(self):
+		x = db.Predicate(request.POST['URI'], request.POST['label'])
+		x.save()
+		return render('semantictags/predicates.html')
+
 
 	def load_global_tags(self):
 		import urllib2
@@ -61,44 +70,51 @@ class SemantictagsController(BaseController):
 		else:
 			print "fails"
 
-		return render('semantictags/index.html')
-
-	def delete_global_tags(self):
-		#x = db.SemanticTag.query("TRUNCATE TABLE semantictag CASCADE;")
-		#x.save()
-		return render('semantictags/index.html')
+		return render('semantictags/semantictags.html')
 
 	def associate_equal_tags(self):
 		suggestions = plugin.suggest_tag_semantictag()
 		for sug in suggestions:
 			x = db.TagSemanticTag(model.tag.Tag.by_id(sug[1]['id']), sug[0])	
 			x.save()
-		return render('semantictags/index.html')
+		return render('semantictags/tag_semantictags.html')
 
 	def remove_semantictag(self):
 		x = db.SemanticTag.get(request.GET['id'])
 		x.delete()
 		x.commit()
-		return render('semantictags/index.html')
+		return render('semantictags/semantictags.html')
 
 	def remove_all_semantictag(self):
 		all_ = db.SemanticTag.list_all()
 		for x in all_:
 			x.delete()
 			x.commit()
-		return render('semantictags/index.html')
+		return render('semantictags/semantictags.html')
 
+	def remove_predicate(self):
+		x = db.Predicate.by_id(request.GET['id'])
+		x.delete()
+		x.commit()
+		return render('semantictags/predicates.html')
+
+	def remove_all_predicates(self):
+		all_ = db.Predicate.list_all()
+		for x in all_:
+			x.delete()
+			x.commit()
+		return render('semantictags/predicates.html')
 
 	def remove_tag_semantictag(self):
 		x = db.TagSemanticTag.get(request.GET['id'])
 		x.delete()
 		x.commit()
-		return render('semantictags/index.html')
+		return render('semantictags/tag_semantictags.html')
 
 	def remove_all_tag_semantictag(self):
 		all_ = db.TagSemanticTag.list_all()
 		for x in all_:
 			x.delete()
 			x.commit()
-		return render('semantictags/index.html')
+		return render('semantictags/tag_semantictags.html')
 
