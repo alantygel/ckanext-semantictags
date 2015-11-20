@@ -1,9 +1,19 @@
-
-=============
 ckanext-semantictags
-=============
+====================
 
-CKAN Semantic Tags gives the possibility for Open Data Portals to semantically tag their datasets. It also allows CKAN portals to connect to a Tag Server, in order to exchange data with other portals.
+CKAN SemanticTags plugin gives the possibility for Open Data Portals to atribute semantic tags to their datasets.
+
+What can you do with the SemanticTags plugin?
+-------------------------------------------
+With the SemanticTags plugin you can:
+
+- Relate your CKAN tags with semantic objects
+- Define custom RDF predicates for linking your datasets with the Linked Open Data cloud
+- Connect several CKAN instances through the use of global semantic tags
+
+Why a SemanticTags plugin?
+-------------------------------------------
+CKAN core offers an RDF version of each database, which gives access to all metadata in Linked Open Data format. However, it does not allow linking the database to external semantic resources. SemanticTags fills this gap, allowing datasets to be tagged with LOD resources.
 
 ------------
 Requirements
@@ -15,10 +25,6 @@ CKAN >= 2.5
 Installation
 ------------
 
-.. Add any additional install steps to the list below.
-   For example installing any non-Python dependencies or adding any required
-   config settings.
-
 To install ckanext-semantictags:
 
 1. Activate your CKAN virtual environment, for example::
@@ -27,11 +33,11 @@ To install ckanext-semantictags:
 
 2. Install the ckanext-semantictags Python package into your virtual environment::
 
-	git clone https://github.com/alantygel/ckanext-semantictags
+	pip install ckanext-semantictags
 
-	python setup.py develop
+3. Run the database migration::
 
-	paster --plugin=ckanext-semantictags semantictags migrate -c /etc/ckan/default/development.ini	
+	paster --plugin=ckanext-semantictags semantictags migrate -c /etc/ckan/default/production.ini	
 
 3. Add ``semantictags`` to the ``ckan.plugins`` setting in your CKAN
    config file (by default the config file is located at
@@ -40,17 +46,6 @@ To install ckanext-semantictags:
 4. Restart CKAN. For example if you've deployed CKAN with Apache on Ubuntu::
 
      sudo service apache2 reload
-
-
----------------
-Config Settings
----------------
-
-Document any optional config settings here. For example::
-
-    # The minimum number of hours to wait before re-checking a resource
-    # (optional, default: 24).
-    ckanext.semantictags.some_setting = some_default_value
 
 
 ------------------------
@@ -63,8 +58,7 @@ do::
     git clone https://github.com/alantygel/ckanext-semantictags.git
     cd ckanext-semantictags
     python setup.py develop
-    pip install -r dev-requirements.txt
-
+	paster --plugin=ckanext-semantictags semantictags migrate -c /etc/ckan/default/development.ini
 
 -----------------
 Running the Tests
