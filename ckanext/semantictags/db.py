@@ -27,8 +27,9 @@ semantictag_table = Table('semantictag', meta.metadata,
 
 predicate_table = Table('predicate', meta.metadata,
 		Column('id', types.UnicodeText, primary_key=True, default=_types.make_uuid),
-		Column('URI', types.Unicode(MAX_TAG_LENGTH), nullable=False),
-		Column('label', types.Unicode(MAX_TAG_LENGTH))
+		Column('namespace', types.Unicode(MAX_TAG_LENGTH), nullable=False),
+		Column('prefix', types.Unicode(MAX_TAG_LENGTH), nullable=False),
+		Column('predicate', types.Unicode(MAX_TAG_LENGTH), nullable=False)
 )
 
 tag_semantictag_table = Table('tag_semantictag', meta.metadata,
@@ -185,9 +186,10 @@ class SemanticTag(domain_object.DomainObject):
 #		domain_object.DomainObject):i
 
 class Predicate(domain_object.DomainObject):
-	def __init__(self, URI=None, label=None):
-		self.URI = URI
-		self.label = label
+	def __init__(self, namespace,prefix,predicate):
+		self.namespace = namespace
+		self.prefix = prefix
+		self.predicate = predicate
 
 	# not stateful so same as purge
 	def delete(self):
@@ -210,26 +212,26 @@ class Predicate(domain_object.DomainObject):
 		query = query.autoflush(autoflush)
 		return query.first()
 
-	@classmethod
-	def by_URI(cls, URI, label=None, autoflush=True):
-		'''Return the Predicate with the given URI, or None.
+#	@classmethod
+#	def by_URI(cls, URI, label=None, autoflush=True):
+#		'''Return the Predicate with the given URI, or None.
 
-		:param URI: the URI of the semantic tag to return
-		:type URI: string (URI format)
-		:param label: URI's label (optional, default: None)
-		:type label: string
+#		:param URI: the URI of the semantic tag to return
+#		:type URI: string (URI format)
+#		:param label: URI's label (optional, default: None)
+#		:type label: string
 
-		:returns: the predicate object with the given id or URI, or None if there is
-			no Predicate with that id or name
-		:rtype: ckan.model.semantictag.Predicate
+#		:returns: the predicate object with the given id or URI, or None if there is
+#			no Predicate with that id or name
+#		:rtype: ckan.model.semantictag.Predicate
 
-		'''
-		if label:
-			query = meta.Session.query(Predicate).filter(Predicate.label==label)
-		else:
-			query = meta.Session.query(Predicate).filter(Predicate.URI==URI)
-		query = query.autoflush(autoflush)
-		return query.first()
+#		'''
+#		if label:
+#			query = meta.Session.query(Predicate).filter(Predicate.label==label)
+#		else:
+#			query = meta.Session.query(Predicate).filter(Predicate.URI==URI)
+#		query = query.autoflush(autoflush)
+#		return query.first()
 
 	@classmethod
 	def list_all(cls):
@@ -242,6 +244,17 @@ class Predicate(domain_object.DomainObject):
 		query = meta.Session.query(Predicate)
 		return query.all()
  
+	@classmethod
+	def list_unique(cls):
+		'''Return all unique namespaces
+
+		:returns: a list of all predicates 
+		:rtype: list of ckan.model.semantictag.Predicate objects
+
+		'''
+		query = meta.Session.query(Predicate).distinct(Predicate.namespace)
+		return query.all()
+
 
 class TagSemanticTag(domain_object.DomainObject):
 
@@ -356,7 +369,7 @@ meta.mapper(TagSemanticTag, tag_semantictag_table, properties={
 	order_by=tag_semantictag_table.c.tag_id,
 	)
 
-meta.mapper(Predicate, predicate_table,order_by=predicate_table.c.URI)
+meta.mapper(Predicate, predicate_table,order_by=predicate_table.c.namespace)
 
 #meta.mapper(TagSemanticTag, tag_semantictag_table, properties={
 #	'smtag':relation(_tag.Tag, backref='tag_semantictag_all',

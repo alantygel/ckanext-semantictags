@@ -12,6 +12,9 @@ def list_semantictags():
 def list_predicates():
 	return db.Predicate.list_all()
 
+def list_unique_predicates():
+	return db.Predicate.list_unique()
+
 def list_tag_semantictags():
 	return db.TagSemanticTag.list_all()
 
@@ -84,6 +87,6 @@ class SemantictagsPlugin(plugins.SingletonPlugin):
 		toolkit.add_resource('fanstatic', 'semantictags')
 
 	def get_helpers(self):
-		return {'semantictags_list_tags':list_tags,'semantictags_tag_show':tag_show, 'semantictags_list_semantictags':list_semantictags, 'semantictags_list_tag_semantictags' : list_tag_semantictags, 'semantictags_semantictag_show': semantictag_show, 'semantictags_find_tag_semantictag' : find_tag_semantictag, 'semantictags_suggest_tag_semantictag': suggest_tag_semantictag,  'semantictags_list_predicates':list_predicates}
+		return {'semantictags_list_tags':list_tags,'semantictags_tag_show':tag_show, 'semantictags_list_semantictags':list_semantictags, 'semantictags_list_tag_semantictags' : list_tag_semantictags, 'semantictags_semantictag_show': semantictag_show, 'semantictags_find_tag_semantictag' : find_tag_semantictag, 'semantictags_suggest_tag_semantictag': suggest_tag_semantictag,  'semantictags_list_predicates':list_predicates,'semantictags_list_unique_predicates':list_unique_predicates}
 
 

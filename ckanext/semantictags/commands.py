@@ -54,8 +54,8 @@ class SemanticTagsCommands(CkanCommand):
 
 		if not db.predicate_table.exists():
 			db.predicate_table.create()
-			log.info('Tag Semantic Tags table created')
-			print 'Tag Semantic Tags table created'
+			log.info('Predicate table created')
+			print 'Predicate table created'
 		else:
-			log.warning('Tag Semantic Tags table already exists')
-			print 'Tag Semantic Tags table already exists'
+			log.warning('Predicate table already exists')
+			print 'Predicate table already exists'

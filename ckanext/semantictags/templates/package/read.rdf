@@ -7,19 +7,27 @@
   xmlns:dcat="http://www.w3.org/ns/dcat#"
   xmlns:dct="http://purl.org/dc/terms/"
   xmlns:muto="http://purl.org/muto/core#"
+  {% set unique_predicates = h.semantictags_list_unique_predicates() %}
+  {% if unique_predicates %}
+	{% for pred in unique_predicates %}
+  xmlns:{{ pred.prefix }}="{{ pred.namespace }}"
+	{% endfor %}
+  {% endif %}
 >
+  {% set predicates = h.semantictags_list_predicates() %}
+
   <dcat:Dataset rdf:about="{{ h.url_for(controller='package',action='read',id=c.pkg_dict['name'], qualified=True) }}">
     <owl:sameAs rdf:resource="urn:uuid:{{c.pkg_dict['id']}}"/>
     <dct:description>{{c.pkg_dict['notes']}}</dct:description>
     {% for tag_dict in c.pkg_dict['tags'] %}
         <dcat:keyword>{{ tag_dict["name"] }}</dcat:keyword>
 	{% set semantictag = h.semantictags_find_tag_semantictag(tag_dict["id"]) %}
-	{% set predicates = h.semantictags_list_predicates() %}
+
 	{% if semantictag %}
 		<muto:taggedWith rdf:resource="{{ semantictag.URI }}" />
 		{% if predicates %}
 			{% for pred in predicates %}
-		<{{ pred.URI }} rdf:resource="{{ semantictag.URI }}" />
+		<{{ pred.prefix }}:{{ pred.predicate }} rdf:resource="{{ semantictag.URI }}" />
 			{% endfor %}
 		{% endif %}
 	{% endif %}

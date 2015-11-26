@@ -23,10 +23,14 @@
 			{% snippet "semantictags/snippets/associate_form.html" %}
 	 	{% endblock %}
 
+
 		{% if h.semantictags_list_tag_semantictags() %}
+
 			{% block list_tag_semantictags %}
 				{% snippet "semantictags/snippets/list_tag_semantictags.html" %}
 			{% endblock %}
+		{% else %}
+				<p>You still don't have any relations between tags and semantic tags. Add some!</p>
 		{% endif %}
 
 	{% else %}	

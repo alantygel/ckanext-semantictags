@@ -42,7 +42,7 @@ class SemantictagsController(BaseController):
 		return render('semantictags/semantictags.html')
 
 	def add_predicate(self):
-		x = db.Predicate(request.POST['URI'], request.POST['label'])
+		x = db.Predicate(request.POST['namespace'], request.POST['prefix'], request.POST['predicate'])
 		x.save()
 		return render('semantictags/predicates.html')
 
