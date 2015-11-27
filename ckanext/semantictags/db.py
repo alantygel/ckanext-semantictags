@@ -32,10 +32,13 @@ predicate_table = Table('predicate', meta.metadata,
 		Column('predicate', types.Unicode(MAX_TAG_LENGTH), nullable=False)
 )
 
+tag_id = Column('tag_id', types.UnicodeText, ForeignKey('tag.id',ondelete="CASCADE"))
+semantic_tag_id = Column('semantictag_id', types.UnicodeText, ForeignKey('semantictag.id',ondelete="CASCADE"))
+
 tag_semantictag_table = Table('tag_semantictag', meta.metadata,
 		Column('id', types.UnicodeText, primary_key=True, default=_types.make_uuid),
-		Column('tag_id', types.UnicodeText, ForeignKey('tag.id',ondelete="CASCADE")),
-		Column('semantictag_id', types.UnicodeText, ForeignKey('semantictag.id',ondelete="CASCADE")),
+		tag_id,
+		semantic_tag_id
 		)
 
 vdm.sqlalchemy.make_table_stateful(tag_semantictag_table)
@@ -49,6 +52,7 @@ class SemanticTag(domain_object.DomainObject):
 
 	# not stateful so same as purge
 	def delete(self):
+		print "xxx"
 		self.purge()
 		return
 
@@ -358,15 +362,15 @@ class TagSemanticTag(domain_object.DomainObject):
 
 
 meta.mapper(SemanticTag, semantictag_table, properties={
-	'tag_semantictags': relation(TagSemanticTag, backref='semantictag')
+	'tag_semantictags': relation(TagSemanticTag, backref='semantictag',cascade='all, delete, delete-orphan')
 	},
 	order_by=semantictag_table.c.URI,
 	)
 
 meta.mapper(TagSemanticTag, tag_semantictag_table, properties={
-	'tag': relation(_tag.Tag, backref='tag_semantictag_all')
-	},
-	order_by=tag_semantictag_table.c.tag_id,
+	'tag': relation(_tag.Tag, foreign_keys=[tag_id]),
+	'semantic_tag': relation(SemanticTag, foreign_keys=[semantic_tag_id])
+	}
 	)
 
 meta.mapper(Predicate, predicate_table,order_by=predicate_table.c.namespace)

@@ -81,8 +81,10 @@ class SemantictagsController(BaseController):
 
 	def remove_semantictag(self):
 		x = db.SemanticTag.get(request.GET['id'])
-		x.delete()
-		x.commit()
+		import ckan.model.meta as meta
+		meta.Session.delete(x)
+		meta.Session.commit()
+
 		return render('semantictags/semantictags.html')
 
 	def remove_all_semantictag(self):
