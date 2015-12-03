@@ -22,7 +22,7 @@ def tag_show(id):
 	return model.tag.Tag.by_id(id).name
 
 def semantictag_show(id):
-	return db.SemanticTag.by_id(id).URI
+	return db.SemanticTag.by_id(id)
 
 def find_tag_semantictag(tag_id): 
 	res = db.TagSemanticTag.by_tag_id(tag_id)
