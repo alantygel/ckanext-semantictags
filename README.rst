@@ -1,7 +1,7 @@
 ckanext-semantictags
 ====================
 
-CKAN SemanticTags plugin gives the possibility for Open Data Portals to atribute semantic tags to their datasets.
+CKAN SemanticTags plugin gives the possibility for Open Data Portals to attribute semantic tags to their datasets.
 
 What can you do with the SemanticTags plugin?
 -------------------------------------------
