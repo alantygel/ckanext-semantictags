@@ -79,4 +79,15 @@ Add ``semantictags`` to the ``ckan.plugins`` setting in your CKAN
    config file (by default the config file is located at
    ``/etc/ckan/default/development.ini``).
 
+Use
+---------------------
 
+Navigate to yoursite/semantictags
+
+
+Acknowledgements
+---------------------
+
+This work was driven in the context of the research STODaP_ project, developed at the Federal University of Rio de Janeiro (Brazil) and the University of Bonn (Germany)
+
+.. _STODaP: http://stodap.org/
