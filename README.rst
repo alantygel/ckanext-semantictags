@@ -19,12 +19,15 @@ Screenshots
 -------------------------------------------
 
 Settings - Associations between tags and registered semantic tags.
+
 .. image:: http://stodap.org/tags/images/9/97/CKAN_Semantictags_Plugin.png
 
 Dataset - Link to tags and associated semantic tags
+
 .. image:: http://stodap.org/tags/images/0/0c/CKAN_Semantictags_Plugin_-_Dataset.png
 
 RDF output, linking dataset to the Linked Open Data cloud.
+
 .. image:: http://stodap.org/tags/images/2/2a/CKAN_Semantictags_Plugin_-_RDF.png
 
 ------------
