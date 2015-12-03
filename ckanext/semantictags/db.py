@@ -19,13 +19,13 @@ __all__ = ['semantictag_table', 'predicate_table', 'tag_semantictag_table', 'Sem
 MAX_TAG_LENGTH = 200
 MIN_TAG_LENGTH = 2
 
-semantictag_table = Table('semantictag', meta.metadata,
+semantictag_table = Table('st_semantictag', meta.metadata,
 		Column('id', types.UnicodeText, primary_key=True, default=_types.make_uuid),
 		Column('URI', types.Unicode(MAX_TAG_LENGTH), nullable=False),
 		Column('label', types.Unicode(MAX_TAG_LENGTH))
 )
 
-predicate_table = Table('predicate', meta.metadata,
+predicate_table = Table('st_predicate', meta.metadata,
 		Column('id', types.UnicodeText, primary_key=True, default=_types.make_uuid),
 		Column('namespace', types.Unicode(MAX_TAG_LENGTH), nullable=False),
 		Column('prefix', types.Unicode(MAX_TAG_LENGTH), nullable=False),
@@ -33,9 +33,9 @@ predicate_table = Table('predicate', meta.metadata,
 )
 
 tag_id = Column('tag_id', types.UnicodeText, ForeignKey('tag.id',ondelete="CASCADE"))
-semantic_tag_id = Column('semantictag_id', types.UnicodeText, ForeignKey('semantictag.id',ondelete="CASCADE"))
+semantic_tag_id = Column('semantictag_id', types.UnicodeText, ForeignKey('st_semantictag.id',ondelete="CASCADE"))
 
-tag_semantictag_table = Table('tag_semantictag', meta.metadata,
+tag_semantictag_table = Table('st_tag_semantictag', meta.metadata,
 		Column('id', types.UnicodeText, primary_key=True, default=_types.make_uuid),
 		tag_id,
 		semantic_tag_id
