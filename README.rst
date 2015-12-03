@@ -1,25 +1,37 @@
 ckanext-semantictags
 ====================
 
-CKAN SemanticTags plugin gives the possibility for Open Data Portals to attribute semantic tags to their datasets.
+CKAN SemanticTags plugin offers the possibility for Open Data Portals to tag their datasets with semantic resources.
 
 What can you do with the SemanticTags plugin?
 -------------------------------------------
 With the SemanticTags plugin you can:
 
-- Relate your CKAN tags with semantic objects
+- Relate your CKAN tags to semantic resources;
 - Define custom RDF predicates for linking your datasets with the Linked Open Data cloud
 - Connect several CKAN instances through the use of global semantic tags
 
 Why a SemanticTags plugin?
 -------------------------------------------
-CKAN core offers an RDF version of each database, which gives access to all metadata in Linked Open Data format. However, it does not allow linking the database to external semantic resources. SemanticTags fills this gap, allowing datasets to be tagged with LOD resources.
+CKAN offers from core an RDF description of the set of metadata of each database. However, linking the databases to external semantic resources was not possible. SemanticTags fills this gap, allowing datasets to be tagged with LOD resources.
+
+Screenshots
+-------------------------------------------
+
+Settings - Associations between tags and registered semantic tags.
+.. image:: http://stodap.org/tags/images/9/97/CKAN_Semantictags_Plugin.png
+
+Dataset - Link to tags and associated semantic tags
+.. image:: http://stodap.org/tags/images/0/0c/CKAN_Semantictags_Plugin_-_Dataset.png
+
+RDF output, linking dataset to the Linked Open Data cloud.
+.. image:: http://stodap.org/tags/images/2/2a/CKAN_Semantictags_Plugin_-_RDF.png
 
 ------------
 Requirements
 ------------
 
-CKAN >= 2.5
+CKAN >= 2.4
 
 ------------
 Installation
